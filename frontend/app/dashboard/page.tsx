@@ -76,7 +76,7 @@ export default function Dashboard() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${session?.user?.id}`,
+            Authorization: `Bearer ${(session?.user as any)?.id || 'test-token'}`,
           },
         }
       );
