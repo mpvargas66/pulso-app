@@ -1,0 +1,60 @@
+pulso-app/
+├─ README.md
+│
+├─ frontend/
+│  ├─ .env.local
+│  ├─ .gitignore
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  ├─ next.config.js
+│  ├─ tailwind.config.js
+│  ├─ postcss.config.js
+│  │
+│  ├─ app/
+│  │  ├─ page.tsx
+│  │  ├─ layout.tsx
+│  │  ├─ dashboard/
+│  │  │  └─ page.tsx
+│  │  ├─ auth/
+│  │  │  ├─ signin/
+│  │  │  │  └─ page.tsx
+│  │  │  └─ signup/
+│  │  │     └─ page.tsx
+│  │  └─ api/
+│  │     └─ auth/
+│  │        └─ [...nextauth]/
+│  │           └─ route.ts
+│  │
+│  ├─ components/
+│  │  ├─ Header.tsx
+│  │  ├─ ProfileForm.tsx
+│  │  └─ AnalysisResult.tsx
+│  │
+│  └─ lib/
+│     ├─ api.ts
+│     ├─ auth.ts
+│     └─ utils.ts
+│
+└─ backend/
+   ├─ .env.local
+   ├─ .gitignore
+   ├─ main.py
+   ├─ requirements.txt
+   │
+   └─ app/
+      ├─ __init__.py
+      ├─ main.py
+      ├─ config.py
+      ├─ database.py
+      ├─ models.py
+      ├─ schemas.py
+      │
+      ├─ routes/
+      │  ├─ auth.py
+      │  ├─ profiles.py
+      │  ├─ analyses.py
+      │  └─ benchmarks.py
+      │
+      └─ services/
+         ├─ pesaje.py
+         └─ claude_api.py
