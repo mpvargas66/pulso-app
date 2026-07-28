@@ -15,6 +15,10 @@ interface FormData {
   currentSalary: string;
 }
 
+interface ProfileFormProps {
+  onSubmit?: (formData: FormData) => Promise<void> | void;
+}
+
 const initialFormData: FormData = {
   currentPosition: '',
   yearsOfExperience: '',
@@ -34,7 +38,7 @@ const industryOptions = ['FinTech', 'SaaS', 'Large Corp', 'Startup'];
 const companySizeOptions = ['1-50', '50-500', '500-5k', '5k+'];
 const regionOptions = ['Santiago', 'Regiones'];
 
-export default function ProfileForm() {
+export default function ProfileForm({ onSubmit }: ProfileFormProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
@@ -105,14 +109,14 @@ export default function ProfileForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Call API endpoint to analyze profile
-      console.log('Enviando datos:', formData);
-
-      // Simular delay de API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Success handling
-      alert('Análisis iniciado. Pronto recibirás tus resultados.');
+      if (onSubmit) {
+        await onSubmit(formData);
+      } else {
+        // Fallback: Simular delay de API
+        console.log('Enviando datos:', formData);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        alert('Análisis iniciado. Pronto recibirás tus resultados.');
+      }
     } catch (error) {
       console.error('Error:', error);
       alert('Hubo un error al procesar tu análisis. Intenta de nuevo.');
