@@ -366,3 +366,4 @@ MIT License - See LICENSE file for details
 **Made with ❤️ by Arauko Labs**
 
 *Empoderando profesionales con datos de salario reales.*
+# Force redeploy
