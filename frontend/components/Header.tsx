@@ -45,7 +45,7 @@ export default function Header() {
                   </span>
                 </div>
                 <button
-                  onClick={() => signOut({ redirectTo: '/' })}
+                  onClick={() => signOut({ redirect: true })}
                   className="text-sm text-gray-600 hover:text-gray-900 transition-colors font-medium"
                 >
                   Salir
