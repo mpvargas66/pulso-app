@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
       {
         success: true,
         count: analyses.length,
-        analyses: analyses.map((a) => ({
+        analyses: analyses.map((a: any) => ({
           id: a.id,
           created_at: a.created_at,
           job_title: a.job_title,
