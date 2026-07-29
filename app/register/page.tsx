@@ -1,5 +1,3 @@
-// PULSO v2 - Register Page
-
 'use client';
 
 import { useState } from 'react';
@@ -45,7 +43,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // Auto-login después de registro
       const loginResult = await signIn('credentials', {
         email,
         password,
@@ -77,9 +74,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
-                Nombre Completo
-              </label>
+              <label className="block text-sm font-medium text-slate-200 mb-2">Nombre Completo</label>
               <input
                 type="text"
                 value={fullName}
@@ -91,9 +86,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-slate-200 mb-2">Email</label>
               <input
                 type="email"
                 value={email}
@@ -105,9 +98,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
-                Contraseña
-              </label>
+              <label className="block text-sm font-medium text-slate-200 mb-2">Contraseña</label>
               <input
                 type="password"
                 value={password}
@@ -119,9 +110,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
-                Confirmar Contraseña
-              </label>
+              <label className="block text-sm font-medium text-slate-200 mb-2">Confirmar Contraseña</label>
               <input
                 type="password"
                 value={confirmPassword}

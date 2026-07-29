@@ -1,5 +1,3 @@
-// PULSO v2 - Login Page
-
 'use client';
 
 import { useState } from 'react';
@@ -43,9 +41,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-lg p-8">
           <h1 className="text-3xl font-bold text-white mb-2 text-center">PULSO</h1>
-          <p className="text-slate-400 text-center mb-8">
-            Inicia sesión en tu cuenta
-          </p>
+          <p className="text-slate-400 text-center mb-8">Inicia sesión en tu cuenta</p>
 
           {error && (
             <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-6">
@@ -55,9 +51,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-slate-200 mb-2">Email</label>
               <input
                 type="email"
                 value={email}
@@ -69,9 +63,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
-                Contraseña
-              </label>
+              <label className="block text-sm font-medium text-slate-200 mb-2">Contraseña</label>
               <input
                 type="password"
                 value={password}
