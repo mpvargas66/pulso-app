@@ -4,6 +4,7 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     serverComponentsExternalPackages: ['pg', 'bcryptjs'],
+    isrMemoryCacheSize: 0,
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -17,6 +18,10 @@ const nextConfig = {
     return config;
   },
   output: 'standalone',
+  onDemandEntries: {
+    maxInactiveAge: 0,
+    pagesBufferLength: 0,
+  },
 };
 
 module.exports = nextConfig;
