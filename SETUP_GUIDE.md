@@ -1,238 +1,171 @@
-# 🚀 PULSO MVP - Setup Guide
+# 🔧 PULSO v2 - Setup Guide
 
-## ⚠️ Python Version Issue
+Guía paso a paso para tener PULSO corriendo en producción.
 
-**Problema**: Python 3.13 tiene incompatibilidad con `pydantic-core` (dependencia nativa)
+## Requisitos Previos
 
-**Solución**: Usar Python 3.11 o 3.12
+- [ ] Git instalado
+- [ ] GitHub account (repo ya existe: mpvargas66/pulso-app)
+- [ ] Vercel account (gratuita en vercel.com)
+- [ ] Supabase account (gratuita en supabase.com)
+- [ ] Anthropic API key (de Anthropic)
 
----
+## Fase 1: Setup Supabase (5 minutos)
 
-## 📝 Quick Setup (5 minutos)
+### 1.1 Crear Project
+1. Ve a [supabase.com](https://supabase.com) → Sign Up
+2. Click "New Project"
+3. Datos:
+   - Name: `pulso-v2`
+   - Database Password: Guarda bien (no la necesitaremos después)
+   - Region: `sa-east-1` (São Paulo, cercano a Chile)
+4. Espera a que se cree (~2 minutos)
 
-### Step 1: Verificar Python Version
+### 1.2 Obtener DATABASE_URL
+1. Project settings (engranaje abajo a la izq.)
+2. Tab "Database"
+3. Bajo "Connection string", selecciona "URI"
+4. Copia el string (empieza con `postgresql://...`)
+5. **Guarda en lugar seguro** (la usaremos en Vercel)
 
-```bash
-python3 --version
-# Debe mostrar: Python 3.11.x o 3.12.x
-# ❌ NO: Python 3.13.x
-```
-
-### Step 2: Si tienes Python 3.13, cambia a 3.12
-
-#### Opción A: Con Homebrew (macOS)
-```bash
-# Instalar Python 3.12
-brew install python@3.12
-
-# Verificar
-python3.12 --version
-
-# Usar para el proyecto
-python3.12 -m venv venv
-source venv/bin/activate
-```
-
-#### Opción B: Con Conda (cualquier OS)
-```bash
-# Crear environment con Python 3.12
-conda create -n pulso python=3.12
-conda activate pulso
-```
-
-#### Opción C: Descargar desde python.org
-- Ir a: https://www.python.org/downloads/
-- Descargar Python 3.12
-- Instalar
-- Usar `python3.12` en lugar de `python3`
+### 1.3 Ejecutar Schema SQL
+1. En el Supabase dashboard, click "SQL Editor" (lado izq.)
+2. Click "+ New Query"
+3. Copia TODO el contenido de `/db/schema.sql` del repo
+4. Pégalo en el editor
+5. Click "Run" (esquina derecha)
+6. ✅ Listo: 5 tablas + 60 registros de prueba creados
 
 ---
 
-## 🔧 Backend Setup
+## Fase 2: Setup Vercel (5 minutos)
 
-### 1. Crear venv con Python 3.12
+### 2.1 Conectar GitHub
+1. Ve a [vercel.com](https://vercel.com) → Sign Up (con GitHub)
+2. Autoriza Vercel para acceder a tu GitHub
+
+### 2.2 Importar Proyecto
+1. En Vercel dashboard, click "Add New..." → "Project"
+2. Selecciona repo `mpvargas66/pulso-app`
+3. Click "Import"
+4. **IMPORTANTE**: Configurar Environment Variables (siguiente sección)
+
+### 2.3 Agregar Environment Variables
+1. En el formulario de import, expandir "Environment Variables"
+2. Agrega estos 4:
+
+| Nombre | Valor | De dónde |
+|--------|-------|----------|
+| `DATABASE_URL` | `postgresql://...` | De Supabase (Fase 1.2) |
+| `ANTHROPIC_API_KEY` | `sk-...` | De Anthropic |
+| `NEXTAUTH_URL` | `https://pulso-xxx.vercel.app` | Tu URL (se genera después) |
+| `NEXTAUTH_SECRET` | (genera con comando abajo) | Genera local |
+
+**Generar NEXTAUTH_SECRET**:
 ```bash
-cd /Users/marco/pulso-app/backend
-
-# macOS/Linux
-python3.12 -m venv venv
-source venv/bin/activate
-
-# Windows
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 2. Instalar dependencias
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-### 3. Configurar database
-```bash
-# Crear database PostgreSQL
-createdb pulso
-
-# O si usas psql
-psql -U postgres -c "CREATE DATABASE pulso;"
-
-# Cargar schema
-psql -U postgres -d pulso < migrations/001_initial_schema.sql
-psql -U postgres -d pulso < migrations/002_seed_data.sql
-```
-
-### 4. Configurar .env.local
-```bash
-# Copiar template
-cp ../.env.example .env.local
-
-# Editar con tus valores
-nano .env.local
-```
-
-Valores necesarios:
-```env
-DATABASE_URL=postgresql://user:pass@localhost:5432/pulso
-CLAUDE_API_KEY=sk-ant-...  # Obtener de https://console.anthropic.com/
-JWT_SECRET=your-secret-key-here
-```
-
-### 5. Iniciar servidor
-```bash
-python main.py
-# Server running on http://0.0.0.0:8000
-# API docs: http://localhost:8000/api/docs
-```
-
----
-
-## 🎨 Frontend Setup
-
-### 1. Instalar dependencias
-```bash
-cd /Users/marco/pulso-app/frontend
-
-npm install
-# o
-npm install --legacy-peer-deps  # Si hay conflictos
-```
-
-### 2. Configurar .env.local
-```bash
-cp ../.env.example .env.local
-# Ya tienen valores por defecto, no necesita cambios
-```
-
-### 3. Iniciar servidor
-```bash
-npm run dev
-# Server running on http://localhost:3000
-```
-
----
-
-## ✅ Verificación
-
-### Backend
-```bash
-# En navegador
-http://localhost:8000/api/docs
-
-# En terminal
-curl http://localhost:8000/health
-# Debe retornar: {"status":"healthy",...}
-```
-
-### Frontend
-```bash
-# En navegador
-http://localhost:3000
-
-# Debe ver: Landing page con botón "Comienza gratis"
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Error: "ModuleNotFoundError: No module named 'pydantic'"
-**Solución**: Asegúrate que el venv está activado
-```bash
-source venv/bin/activate  # macOS/Linux
-venv\Scripts\activate     # Windows
-```
-
-### Error: "psycopg2.OperationalError: connection refused"
-**Solución**: PostgreSQL no está corriendo
-```bash
-# macOS
-brew services start postgresql
-
-# Linux
-sudo systemctl start postgresql
-
-# O usar Docker
-docker run -d -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:15
-```
-
-### Error: "NEXTAUTH_SECRET is not set"
-**Solución**: Generar secret
-```bash
-# macOS/Linux
 openssl rand -base64 32
-
-# Windows (PowerShell)
-[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((New-Guid).Guid))
 ```
+Copia el output (ej: `LXHWHamek/vwwgKcHb+GTKoVSYc970N//+NotN7P1iM=`)
 
-### npm install falla
-**Solución**: Limpiar cache
+### 2.4 Deploy
+1. Click "Deploy"
+2. Vercel compilará (espera ~3-5 minutos)
+3. Cuando termine, verás URL: `https://pulso-xxx.vercel.app`
+4. Copia esa URL → agrégala a env var `NEXTAUTH_URL` en Vercel settings
+
+### 2.5 Actualizar NEXTAUTH_URL
+1. En Vercel project, click "Settings" (arriba)
+2. Tab "Environment Variables"
+3. Busca `NEXTAUTH_URL`
+4. Click edit
+5. Reemplaza con tu URL real (ej: `https://pulso-abc123.vercel.app`)
+6. Click "Save"
+7. Vercel re-desplegará automático (espera ~2 min)
+
+---
+
+## Fase 3: Testing (5 minutos)
+
+### 3.1 Acceder a la app
+1. Ve a tu URL Vercel: `https://pulso-xxx.vercel.app`
+2. Deberías ver landing page con botones "Registrarse" / "Ingresar"
+
+### 3.2 Registrar usuario de prueba
+1. Click "Registrarse"
+2. Datos:
+   - Nombre: "Test User"
+   - Email: "test@pulso.cl"
+   - Password: "Test1234!"
+3. Click "Crear Cuenta"
+4. Auto-redirecta a dashboard
+
+### 3.3 Crear análisis de prueba
+1. En dashboard, llena form:
+   - Salario Actual: 3500000
+   - Años Experiencia: 5
+   - Cargo: Software Engineer
+   - Industria: Technology
+   - Nivel Educativo: Profesional
+   - Tamaño Empresa: Grande
+2. Click "Calcular Análisis"
+3. ✅ Deberías ver resultados con brecha salarial
+
+### 3.4 Verifica historial
+1. Click tab "Historial"
+2. Deberías ver el análisis que acabas de crear
+3. Click en él para ver detalles completos
+
+---
+
+## ✅ Checklist Final
+
+- [ ] Supabase project creado
+- [ ] Schema SQL ejecutado en Supabase
+- [ ] Vercel project importado
+- [ ] 4 env vars configuradas en Vercel
+- [ ] NEXTAUTH_URL actualizado con URL real
+- [ ] App accesible en `https://pulso-xxx.vercel.app`
+- [ ] Usuario de prueba registrado
+- [ ] Análisis de prueba creado exitosamente
+- [ ] Historial muestra el análisis
+
+---
+
+## 🚀 Desarrollo Futuro
+
+### Git Workflow (sin desarrollo local)
+1. **Push a GitHub**: Solo cambios en código
+2. **Vercel Hook**: Automáticamente detecta push
+3. **Build + Deploy**: ~3-5 minutos
+
+### Comandos Git (desde cualquier lugar)
 ```bash
-rm -rf node_modules package-lock.json
-npm install --legacy-peer-deps
+# Ver estado
+git status
+
+# Agregar cambios
+git add .
+
+# Commit con mensaje
+git commit -m "Descripción del cambio"
+
+# Push a GitHub
+git push origin main
+
+# Vercel deploy automático ✅
 ```
-
----
-
-## 📦 Versiones Recomendadas
-
-| Component | Version | Tested |
-|-----------|---------|--------|
-| Python | 3.11, 3.12 | ✅ |
-| Node.js | 18, 20 | ✅ |
-| PostgreSQL | 14, 15 | ✅ |
-| npm | 9, 10 | ✅ |
-
----
-
-## 🚀 Primeros Pasos
-
-1. **Crear cuenta**
-   - Ir a http://localhost:3000/auth/signup
-   - Email: test@example.com
-   - Password: TestPass123!
-
-2. **Crear perfil**
-   - Llenar formulario de 10 campos
-   - Click en "Analizar"
-
-3. **Ver resultados**
-   - Verás 4 cards con análisis
-   - Peso: 0-1000
-   - P50: salario del mercado
-   - Brecha: diferencia %
-   - Recomendaciones: sugerencias personalizadas
 
 ---
 
 ## 📞 Soporte
 
-- **Docs**: Ver README.md
-- **API**: http://localhost:8000/api/docs
-- **Issues**: GitHub Issues
-- **Email**: hola@pulso.app
+Si algo falla:
+
+1. **Error de Database**: Verifica DATABASE_URL en Supabase
+2. **Error de Auth**: Regenera NEXTAUTH_SECRET
+3. **Error de API**: Abre DevTools (F12) → Console para ver errores
+4. **Deploy lento**: Espera, Vercel tarda ~5 min en primera compilación
 
 ---
 
-**Made with ❤️ by Arauko Labs**
+Última actualización: 2024-01-15

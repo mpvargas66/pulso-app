@@ -1,0 +1,17 @@
+{
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "env": {
+    "DATABASE_URL": "@DATABASE_URL",
+    "ANTHROPIC_API_KEY": "@ANTHROPIC_API_KEY",
+    "NEXTAUTH_URL": "@NEXTAUTH_URL",
+    "NEXTAUTH_SECRET": "@NEXTAUTH_SECRET"
+  },
+  "regions": ["sjc1"],
+  "functions": {
+    "app/api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
+}
